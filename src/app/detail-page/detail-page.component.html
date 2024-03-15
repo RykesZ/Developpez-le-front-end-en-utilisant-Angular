@@ -1,0 +1,33 @@
+<div class="detailPage">
+  <div class="title">
+    <button (click)="onClick()">Back</button>
+    <h1>{{ currentCountryStats.countryFullName }}</h1>
+  </div>
+  <div class="stats">
+    <div class="statBlock">
+      <h3>Number of entries</h3>
+      <p>{{ currentCountryStats.participations }}</p>
+    </div>
+    <div class="statBlock">
+      <h3>Total number medals</h3>
+      <p>{{ currentCountryStats.totalMedalsCount }}</p>
+    </div>
+    <div class="statBlock">
+      <h3>Total number of athletes</h3>
+      <p>{{ currentCountryStats.totalAthleteCount }}</p>
+    </div>
+  </div>
+  <ngx-charts-line-chart
+    [view]="view"
+    [scheme]="colorSchemePC"
+    [showXAxisLabel]="showXAxisLabel"
+    [showYAxisLabel]="showYAxisLabel"
+    [xAxis]="xAxis"
+    [yAxis]="yAxis"
+    [xAxisLabel]="xAxisLabel"
+    [yAxisLabel]="yAxisLabel"
+    [timeline]="timeline"
+    [results]="multi"
+  >
+  </ngx-charts-line-chart>
+</div>
