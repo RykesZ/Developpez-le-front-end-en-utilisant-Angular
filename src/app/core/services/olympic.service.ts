@@ -1,42 +1,55 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {
-  CountryData,
-  ChartDataTemplate,
   ResultDistinctParticipationsAndCountries,
   CountryStats,
   CountrySeries,
 } from '../models/Participation';
+import { Olympic } from '../models/Olympic';
+import { ChartDataTemplate } from '../models/ChartData';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OlympicService {
   private olympicUrl = './assets/mock/olympic.json';
-  private olympics$ = new BehaviorSubject<CountryData[]>([]);
+  private olympics$ = new BehaviorSubject<Olympic[]>([]);
 
   constructor(private http: HttpClient) {}
 
   loadInitialData() {
-    return this.http.get<CountryData[]>(this.olympicUrl).pipe(
-      tap((value) => this.olympics$.next(value)),
-      catchError((error, caught) => {
-        // TODO: improve error handling
+    return this.http.get<Olympic[]>(this.olympicUrl).pipe(
+      tap({
+        next: (value) => this.olympics$.next(value),
+        error: (error) => {
+          // Log error
+          console.error(error);
+          // Handle error
+          this.handleLoadError();
+        },
+      }),
+      catchError((error) => {
+        // Log error
         console.error(error);
-        // can be useful to end loading state and let the user know something went wrong
-        this.olympics$.next([]);
-        return caught;
+        // Handle error
+        this.handleLoadError();
+        // Return an empty observable to continue the error stream
+        return of([]);
       })
     );
   }
 
-  getOlympics(): Observable<CountryData[]> {
+  private handleLoadError() {
+    this.olympics$.next([]);
+  }
+
+  getOlympics(): Observable<Olympic[]> {
     return this.olympics$.asObservable();
   }
 
-  calculateCumulativeMedals(data: CountryData[]): ChartDataTemplate[] {
+  calculateCumulativeMedals(data: Olympic[]): ChartDataTemplate[] {
     const result: ChartDataTemplate[] = [];
 
     data.forEach((countryData) => {
@@ -56,7 +69,7 @@ export class OlympicService {
   }
 
   calculateDistinctCounts(
-    data: CountryData[]
+    data: Olympic[]
   ): ResultDistinctParticipationsAndCountries {
     const distinctParticipations = new Set<number>();
     const distinctCountries = new Set<string>();
@@ -75,17 +88,14 @@ export class OlympicService {
     };
   }
 
-  findCountry(
-    data: CountryData[],
-    countryName: string
-  ): CountryData | undefined {
+  findCountry(data: Olympic[], countryName: string): Olympic | undefined {
     return data.find(
       (item) => item.country.toLowerCase().split(' ').join('') === countryName
     );
   }
 
   //A améliorer pour que la méthode utilise getOlympics() plutôt que de recevoir la donnée en paramètre
-  getCountryStats(data: CountryData[], countryName: string): CountryStats {
+  getCountryStats(data: Olympic[], countryName: string): CountryStats {
     try {
       const countryData = this.findCountry(data, countryName);
       console.log(countryData);
@@ -115,7 +125,7 @@ export class OlympicService {
     }
   }
 
-  getCountrySeries(data: CountryData[], countryName: string): CountrySeries {
+  getCountrySeries(data: Olympic[], countryName: string): CountrySeries {
     try {
       const countryData = this.findCountry(data, countryName);
       if (!countryData || !countryName) {

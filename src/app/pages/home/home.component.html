@@ -1,5 +1,8 @@
 <div class="homePage">
-  <h1>Olympic games app</h1>
+  <div class="header">
+    <h1>Olympic Games App</h1>
+    <img src="assets/olympic.png" alt="olympic" />
+  </div>
   <hr />
   <div class="title">
     <h2>Medals per Country</h2>
@@ -27,6 +30,12 @@
     [doughnut]="doughnut"
     (select)="onSelect($event)"
   >
+    <ng-template #tooltipTemplate let-model="model">
+      <div class="dashboard__graph_label">
+        <p>{{ model.name }}</p>
+        <p>🏅 {{ model.value }}</p>
+      </div>
+    </ng-template>
     <!-- <ng-template #tooltipTemplate let-model="model">
       <div class="custom-tooltip">
         <p><i class="fas fa-medal"></i></p>

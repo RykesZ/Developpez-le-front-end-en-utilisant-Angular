@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, map } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
-import {
-  CountryData,
-  ChartDataTemplate,
-  ResultDistinctParticipationsAndCountries,
-} from 'src/app/core/models/Participation';
+import { ResultDistinctParticipationsAndCountries } from 'src/app/core/models/Participation';
+import { Olympic } from 'src/app/core/models/Olympic';
 import { Router } from '@angular/router';
+import { ChartDataTemplate } from '../../core/models/ChartData';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +12,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  public olympics$!: Observable<CountryData[]>;
+  public olympics$!: Observable<Olympic[]>;
   public medalsPerCountry!: ChartDataTemplate[];
   public numberOfParticipationsAndCountries!: ResultDistinctParticipationsAndCountries;
 

@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
-import {
-  CountryData,
-  CountryStats,
-  CountrySeries,
-} from 'src/app/core/models/Participation';
+import { CountryStats, CountrySeries } from 'src/app/core/models/Participation';
+import { Olympic } from 'src/app/core/models/Olympic';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -14,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './detail-page.component.scss',
 })
 export class DetailPageComponent implements OnInit {
-  public olympics$!: Observable<CountryData[]>;
+  public olympics$!: Observable<Olympic[]>;
   public currentCountryStats!: CountryStats;
   public countryName!: string;
   public countrySeries!: CountrySeries;
@@ -26,6 +23,7 @@ export class DetailPageComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
+  //Si nom de pays inexistant, rediriger vers not found
   ngOnInit(): void {
     this.countryName = this.route.snapshot.params['name'];
     this.olympicService.getOlympics().subscribe((olympics) => {
