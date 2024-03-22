@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, map, tap } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
-import { CountryStats, CountrySeries } from 'src/app/core/models/Participation';
+import { CountryStats } from 'src/app/core/models/CountryStats';
+import { CountrySeries } from 'src/app/core/models/CountrySeries';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -12,31 +13,41 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class DetailPageComponent implements OnInit {
   public olympics$!: Observable<Olympic[]>;
-  public currentCountryStats!: CountryStats;
-  public countryName!: string;
+  public currentCountryStats$!: Observable<CountryStats>;
+  public countryId!: Number;
   public countrySeries!: CountrySeries;
   public multi: CountrySeries[] = [];
 
   constructor(
     private olympicService: OlympicService,
-    private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
-  //Si nom de pays inexistant, rediriger vers not found
+  //Si id de pays inexistant, rediriger vers not found
   ngOnInit(): void {
-    this.countryName = this.route.snapshot.params['name'];
+    this.olympics$ = this.olympicService.getOlympics();
+    this.countryId = parseInt(this.route.snapshot.params['id']);
     this.olympicService.getOlympics().subscribe((olympics) => {
-      this.currentCountryStats = this.olympicService.getCountryStats(
-        olympics,
-        this.countryName
+      const foundOlympic = olympics.find(
+        (olympic) => olympic.id === this.countryId
       );
+      if (!foundOlympic) {
+        this.router.navigateByUrl('/');
+        return;
+      }
       this.countrySeries = this.olympicService.getCountrySeries(
         olympics,
-        this.countryName
+        this.countryId
       );
       this.multi.push(this.countrySeries);
     });
+
+    this.currentCountryStats$ = this.olympics$.pipe(
+      map((olympics) =>
+        this.olympicService.getCountryStats(olympics, this.countryId)
+      )
+    );
   }
 
   view: [number, number] = [700, 300];
@@ -51,8 +62,4 @@ export class DetailPageComponent implements OnInit {
   yAxisLabel: string = 'Number of Medals';
   timeline: boolean = true;
   colorSchemePC = 'cool';
-
-  onClick(): void {
-    this.router.navigateByUrl('');
-  }
 }

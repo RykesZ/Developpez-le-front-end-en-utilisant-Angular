@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
-import {
-  ResultDistinctParticipationsAndCountries,
-  CountryStats,
-  CountrySeries,
-} from '../models/Participation';
+import { BehaviorSubject, Observable, of, map } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { ResultDistinctParticipationsAndCountries } from '../models/DistinctParticipationsAndCountries';
+import { CountryStats } from '../models/CountryStats';
+import { CountrySeries } from '../models/CountrySeries';
+
 import { Olympic } from '../models/Olympic';
 import { ChartDataTemplate } from '../models/ChartData';
 
@@ -19,6 +18,7 @@ export class OlympicService {
 
   constructor(private http: HttpClient) {}
 
+  // Charge les données initiales depuis l'URL spécifiée
   loadInitialData() {
     return this.http.get<Olympic[]>(this.olympicUrl).pipe(
       tap({
@@ -41,14 +41,17 @@ export class OlympicService {
     );
   }
 
+  // Gère les erreurs lors du chargement initial des données
   private handleLoadError() {
     this.olympics$.next([]);
   }
 
+  // Récupère les données des jeux olympiques passés sous forme d'observable
   getOlympics(): Observable<Olympic[]> {
     return this.olympics$.asObservable();
   }
 
+  // Calcule le nombre total de médailles par pays
   calculateCumulativeMedals(data: Olympic[]): ChartDataTemplate[] {
     const result: ChartDataTemplate[] = [];
 
@@ -68,6 +71,7 @@ export class OlympicService {
     return result;
   }
 
+  // Calcule le nombre de participations distinctes et de pays distincts
   calculateDistinctCounts(
     data: Olympic[]
   ): ResultDistinctParticipationsAndCountries {
@@ -88,19 +92,16 @@ export class OlympicService {
     };
   }
 
-  findCountry(data: Olympic[], countryName: string): Olympic | undefined {
-    return data.find(
-      (item) => item.country.toLowerCase().split(' ').join('') === countryName
-    );
+  // Trouve un pays dans les données des jeux olympiques passés en fonction de son identifiant
+  findCountry(data: Olympic[], id: Number): Olympic | undefined {
+    return data.find((item) => item.id === id);
   }
 
-  //A améliorer pour que la méthode utilise getOlympics() plutôt que de recevoir la donnée en paramètre
-  getCountryStats(data: Olympic[], countryName: string): CountryStats {
+  // Récupère les statistiques d'un pays en fonction de son identifiant
+  getCountryStats(data: Olympic[], id: Number): CountryStats {
     try {
-      const countryData = this.findCountry(data, countryName);
-      console.log(countryData);
-      console.log(countryName);
-      if (!countryData || !countryName) {
+      const countryData = this.findCountry(data, id);
+      if (!countryData || !id) {
         throw new Error('Missing parameter to get country stats.');
       }
 
@@ -125,10 +126,11 @@ export class OlympicService {
     }
   }
 
-  getCountrySeries(data: Olympic[], countryName: string): CountrySeries {
+  // Récupère les données de séries pour un pays en fonction de son identifiant
+  getCountrySeries(data: Olympic[], id: Number): CountrySeries {
     try {
-      const countryData = this.findCountry(data, countryName);
-      if (!countryData || !countryName) {
+      const countryData = this.findCountry(data, id);
+      if (!countryData || !id) {
         throw new Error('Missing parameter to get country series.');
       }
       const series: ChartDataTemplate[] = [];

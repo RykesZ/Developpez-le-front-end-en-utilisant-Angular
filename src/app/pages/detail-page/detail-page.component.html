@@ -1,6 +1,8 @@
-<div class="detailPage">
+<div
+  class="detailPage"
+  *ngIf="currentCountryStats$ | async as currentCountryStats"
+>
   <div class="title">
-    <button (click)="onClick()">Back</button>
     <h1>{{ currentCountryStats.countryFullName }}</h1>
   </div>
   <div class="stats">

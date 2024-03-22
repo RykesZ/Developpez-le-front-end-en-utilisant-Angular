@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { DetailPageComponent } from './detail-page/detail-page.component';
+import { DetailPageComponent } from './pages/detail-page/detail-page.component';
 
 const routes: Routes = [
   {
@@ -10,7 +10,7 @@ const routes: Routes = [
     component: HomeComponent,
   },
   {
-    path: 'details/:name',
+    path: 'details/:id',
     component: DetailPageComponent,
   },
   {

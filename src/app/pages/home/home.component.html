@@ -1,13 +1,14 @@
 <div class="homePage">
-  <div class="header">
-    <h1>Olympic Games App</h1>
-    <img src="assets/olympic.png" alt="olympic" />
-  </div>
-  <hr />
   <div class="title">
     <h2>Medals per Country</h2>
   </div>
-  <div class="stats">
+  <div
+    class="stats"
+    *ngIf="
+      numberOfParticipationsAndCountries$
+        | async as numberOfParticipationsAndCountries
+    "
+  >
     <div class="statBlock">
       <h3>Number of JOs :</h3>
       <p>
@@ -22,6 +23,7 @@
     </div>
   </div>
   <ngx-charts-pie-chart
+    *ngIf="medalsPerCountry$ | async as medalsPerCountry"
     [results]="medalsPerCountry"
     [view]="viewPC"
     [animations]="animationPC"
@@ -36,10 +38,5 @@
         <p>🏅 {{ model.value }}</p>
       </div>
     </ng-template>
-    <!-- <ng-template #tooltipTemplate let-model="model">
-      <div class="custom-tooltip">
-        <p><i class="fas fa-medal"></i></p>
-      </div>
-    </ng-template> -->
   </ngx-charts-pie-chart>
 </div>

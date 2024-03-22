@@ -12,7 +12,8 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { registerLocaleData } from '@angular/common';
 import * as fr from '@angular/common/locales/fr';
-import { DetailPageComponent } from './detail-page/detail-page.component';
+import { DetailPageComponent } from './pages/detail-page/detail-page.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { DetailPageComponent } from './detail-page/detail-page.component';
     HomeComponent,
     NotFoundComponent,
     DetailPageComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,

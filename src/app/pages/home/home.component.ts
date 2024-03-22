@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of, map } from 'rxjs';
+import { Observable, of, map, filter } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
-import { ResultDistinctParticipationsAndCountries } from 'src/app/core/models/Participation';
+import { ResultDistinctParticipationsAndCountries } from 'src/app/core/models/DistinctParticipationsAndCountries';
 import { Olympic } from 'src/app/core/models/Olympic';
 import { Router } from '@angular/router';
-import { ChartDataTemplate } from '../../core/models/ChartData';
+import { ChartDataTemplate } from 'src/app/core/models/ChartData';
+import { Participation } from 'src/app/core/models/Participation';
 
 @Component({
   selector: 'app-home',
@@ -13,18 +14,37 @@ import { ChartDataTemplate } from '../../core/models/ChartData';
 })
 export class HomeComponent implements OnInit {
   public olympics$!: Observable<Olympic[]>;
-  public medalsPerCountry!: ChartDataTemplate[];
-  public numberOfParticipationsAndCountries!: ResultDistinctParticipationsAndCountries;
+  medalsPerCountry$!: Observable<ChartDataTemplate[]>;
+  numberOfParticipationsAndCountries$!: Observable<ResultDistinctParticipationsAndCountries>;
 
   constructor(private olympicService: OlympicService, private router: Router) {}
 
   ngOnInit(): void {
-    this.olympicService.getOlympics().subscribe((olympics) => {
-      this.medalsPerCountry =
-        this.olympicService.calculateCumulativeMedals(olympics);
-      this.numberOfParticipationsAndCountries =
-        this.olympicService.calculateDistinctCounts(olympics);
-    });
+    this.olympics$ = this.olympicService.getOlympics();
+    this.medalsPerCountry$ = this.olympics$.pipe(
+      map((olympics) => {
+        return olympics !== undefined
+          ? [...olympics].map((olympic) => {
+              return {
+                id: olympic.id,
+                name: olympic.country,
+                value: olympic.participations.reduce(
+                  (acc: number, curr: Participation) => {
+                    return acc + curr.medalsCount;
+                  },
+                  0
+                ),
+                extra: { id: olympic.id },
+              };
+            })
+          : [];
+      })
+    );
+
+    this.numberOfParticipationsAndCountries$ = this.olympics$.pipe(
+      filter((olympics) => olympics !== undefined),
+      map((olympics) => this.olympicService.calculateDistinctCounts(olympics))
+    );
   }
 
   viewPC: [number, number] = [700, 400];
@@ -33,12 +53,8 @@ export class HomeComponent implements OnInit {
   colorSchemePC = 'cool';
   doughnut = false;
 
-  onSelect(data: string): void {
-    this.router.navigateByUrl(
-      `details/${JSON.parse(JSON.stringify(data))
-        .name.toLowerCase()
-        .split(' ')
-        .join('')}`
-    );
+  onSelect(event: any): void {
+    const id: number = event.extra.id;
+    this.router.navigateByUrl(`details/${id}`);
   }
 }
