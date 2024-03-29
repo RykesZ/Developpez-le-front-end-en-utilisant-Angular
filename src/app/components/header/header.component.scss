@@ -13,3 +13,35 @@
     padding: 10px 20px;
   }
 }
+
+.small-screen {
+  img {
+    max-width: 10em;
+  }
+  h1 {
+    font-size: 1.5em;
+  }
+  button {
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+  }
+}
+
+.medium-screen {
+  img {
+    max-width: 15em;
+  }
+  h1 {
+    font-size: 1.75em;
+  }
+}
+
+.large-screen {
+  img {
+    max-width: 20em;
+  }
+  h1 {
+    font-size: 2em;
+  }
+}

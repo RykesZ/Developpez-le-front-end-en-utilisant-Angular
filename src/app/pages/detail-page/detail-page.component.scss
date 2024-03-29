@@ -46,3 +46,48 @@
     }
   }
 }
+
+.small-screen {
+  h1 {
+    font-size: 1em;
+  }
+  h3 {
+    font-size: 0.8em;
+  }
+  p {
+    font-size: 0.8em;
+  }
+  .stats {
+    flex-direction: column;
+    align-items: center;
+
+    .statBlock {
+      width: 40%;
+      margin: 10px 10px;
+    }
+  }
+}
+
+.medium-screen {
+  h1 {
+    font-size: 1.5em;
+  }
+  h3 {
+    font-size: 1.25em;
+  }
+  p {
+    font-size: 1.25em;
+  }
+}
+
+.large-screen {
+  h1 {
+    font-size: 2em;
+  }
+  h3 {
+    font-size: 1.5em;
+  }
+  p {
+    font-size: 1.5em;
+  }
+}

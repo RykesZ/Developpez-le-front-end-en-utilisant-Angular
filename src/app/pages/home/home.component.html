@@ -1,4 +1,11 @@
-<div class="homePage">
+<div
+  class="homePage"
+  [ngClass]="{
+    'small-screen': isSmallScreen,
+    'medium-screen': isMediumScreen,
+    'large-screen': isLargeScreen
+  }"
+>
   <div class="title">
     <h2>Medals per Country</h2>
   </div>
@@ -25,11 +32,11 @@
   <ngx-charts-pie-chart
     *ngIf="medalsPerCountry$ | async as medalsPerCountry"
     [results]="medalsPerCountry"
-    [view]="viewPC"
     [animations]="animationPC"
     [scheme]="colorSchemePC"
     [labels]="labelsPC"
     [doughnut]="doughnut"
+    [view]="viewPC"
     (select)="onSelect($event)"
   >
     <ng-template #tooltipTemplate let-model="model">

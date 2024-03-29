@@ -46,3 +46,39 @@
     }
   }
 }
+
+.small-screen {
+  h2 {
+    font-size: 1em;
+  }
+  h3 {
+    font-size: 0.8em;
+  }
+  p {
+    font-size: 0.8em;
+  }
+}
+
+.medium-screen {
+  h2 {
+    font-size: 1.5em;
+  }
+  h3 {
+    font-size: 1.25em;
+  }
+  p {
+    font-size: 1.25em;
+  }
+}
+
+.large-screen {
+  h2 {
+    font-size: 2em;
+  }
+  h3 {
+    font-size: 1.5em;
+  }
+  p {
+    font-size: 1.5em;
+  }
+}
