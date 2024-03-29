@@ -24,11 +24,11 @@ export class HomeComponent implements OnInit {
   isSmallScreen = false;
   isMediumScreen = false;
   isLargeScreen = false;
-  // chartDimensions: [number, number] = [700, 400];
   chartDimensions$: BehaviorSubject<[number, number]> = new BehaviorSubject<
     [number, number]
   >([700, 400]);
   viewPC: [number, number] = [700, 400];
+  isDataAvailable = false;
 
   constructor(
     private olympicService: OlympicService,
@@ -38,6 +38,11 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics();
+    this.olympics$.subscribe((olympics: Olympic[]) => {
+      if (olympics.length > 0) {
+        this.isDataAvailable = true;
+      }
+    });
     this.medalsPerCountry$ = this.olympics$.pipe(
       map((olympics) => {
         return olympics !== undefined

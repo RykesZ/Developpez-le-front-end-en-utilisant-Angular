@@ -5,6 +5,7 @@
     'medium-screen': isMediumScreen,
     'large-screen': isLargeScreen
   }"
+  *ngIf="isDataAvailable"
 >
   <div class="title">
     <h2>Medals per Country</h2>
@@ -46,4 +47,7 @@
       </div>
     </ng-template>
   </ngx-charts-pie-chart>
+</div>
+<div class="homePage" *ngIf="!isDataAvailable">
+  <p>Please check your internet connexion</p>
 </div>
