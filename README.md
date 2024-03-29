@@ -1,6 +1,6 @@
 # OlympicGamesStarter
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.3.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.3 (AND updated to version 17.2.2 for external charts libraries compatibility reasons).
 
 Don't forget to install your node_modules before starting (`npm install`).
 
